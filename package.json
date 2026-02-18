@@ -1,0 +1,14 @@
+{
+  "name": "express-blog-routing",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node blog.js",
+    "dev": "node --watch blog.js"
+  },
+  "author": "Leo Palmieri",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
