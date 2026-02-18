@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 
-const posts = [
+const comics = [
     {
         id: 1,
         titolo: "Neon Genesis Evangelion",
@@ -47,9 +47,23 @@ app.get('/', (req, res) => {
 })
 
 app.get('/bacheca', (req, res) => {
-    res.json(posts)
+    res.send(`"Lista dei fumetti:"${comics}`);
 })
-
+app.get('/bacheca:id', (req, res) => {
+    res.send(`"Dettagli del fumetto selezionato:"${req.params.id}`);
+})
+app.post('/bacheca', (req, res) => {
+    res.send("Creazione nuovo fumetto");
+})
+app.put('/bacheca:id', (req, res) => {
+    res.send(`"Modifica completa del fumetto" ${req.params.id}`);
+})
+app.patch('/bacheca:id', (req, res) => {
+    res.send(`"Modifica parziale del fumetto" ${req.params.id}`);
+})
+app.delete('/bacheca:id', (req, res) => {
+    res.send(`"Eliminare il fumetto" ${req.params.id}`);
+})
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
