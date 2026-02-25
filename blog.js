@@ -6,6 +6,7 @@ const port = 3000
 
 
 app.use(express.static("img"))
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send('Server del mio blog')

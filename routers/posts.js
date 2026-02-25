@@ -13,21 +13,15 @@ router.get('/:id', productController.show);
 
 //Store (Crud):
 
-router.post('/', (req, res) => {
-  res.send("Creazione nuovo post");
-})
+router.post('/', productController.store)
 
 //Update (crUd):
 
-router.put('/:id', (req, res) => {
-  res.send(`"Modifica completa del post" ${req.params.id}`);
-})
+router.put('/:id', productController.update)
 
 //Modify (crUd):
 
-router.patch('/:id', (req, res) => {
-  res.send(`"Modifica parziale del post" ${req.params.id}`);
-})
+router.patch('/:id', productController.modify)
 
 //Destroy (cruD):
 
