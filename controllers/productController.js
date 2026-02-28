@@ -1,3 +1,4 @@
+
 const products = require("../data/products");
 
 //Index:
@@ -90,7 +91,30 @@ const update = (req, res) => {
 //Modify (crUd)
 const modify = (req, res) => {
     console.log(`Modifica parziale del post with id: ${req.params.id}`, req.body);
-    return res.send(`Modifica parziale del post with id: ${req.params.id}`);
+
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+        return res.status(400).json({ error: "User Error", message: "ID non trovato" });
+    }
+
+    const result = products.find(product => product.id == id);
+
+    if (!result) {
+        return res.status(404).json({ error: "Not Found", message: "Product non trovato" });
+    }
+
+    const allProperties = ["title", "content", "image", "tags"];
+
+    for (const prop of allProperties) {
+        if (req.body[prop]) {
+            result[prop] = req.body[prop]
+        }
+    }
+
+
+
+    return res.json(result);
 }
 
 
