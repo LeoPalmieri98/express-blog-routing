@@ -5,6 +5,9 @@ const products = require("../data/products");
 
 const index = (req, res) => {
     let filtredProducts = products;
+
+    niente.prova();
+
     if (req.query.tags) {
         filtredProducts = products.filter(product => product.tags.includes(req.query.tags));
     }
