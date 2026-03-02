@@ -2,6 +2,7 @@ const express = require('express')
 const postsRouter = require("./routers/posts.js")
 const checkTime = require("./middlewares/checkTime.js")
 const errorHandler = require('./middlewares/errorHandler.js')
+const notFound = require('./middlewares/notFound.js')
 
 
 const app = express()
@@ -16,9 +17,13 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Server del mio blog')
 })
-app.use("/bacheca", checkTime, postsRouter)
 
+//Middlewares:
+app.use("/bacheca", checkTime, postsRouter)
+app.use(notFound)
 app.use(errorHandler);
+
+
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
