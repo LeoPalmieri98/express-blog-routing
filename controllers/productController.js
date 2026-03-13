@@ -1,5 +1,5 @@
 
-const products = require("../data/products");
+const db = require("../data/db");
 
 //Index:
 
