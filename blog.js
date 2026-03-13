@@ -12,7 +12,7 @@ const port = 3000
 
 app.use(express.static("img"));
 app.use(express.json());
-app.use(checkTime);
+//app.use(checkTime);
 
 app.get('/', (req, res) => {
     res.send('Server del mio blog')

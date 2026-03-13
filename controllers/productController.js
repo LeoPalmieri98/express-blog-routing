@@ -4,14 +4,24 @@ const db = require("../data/db");
 //Index:
 
 const index = (req, res) => {
-    let filtredProducts = products;
 
-    niente.prova();
+    const sqlQuery = "SELECT * FROM db_blog.posts ";
+    db.query(sqlQuery, (err, rows) => {
+        if (err) return res.status(500).json({ error: "Error database server", message: "Database query failed" });
 
-    if (req.query.tags) {
-        filtredProducts = products.filter(product => product.tags.includes(req.query.tags));
-    }
-    res.json(filtredProducts);
+        let results = rows
+
+        if (req.query.tags) {
+            results = rows.filter(product => product.tags.includes(req.query.tags));
+        }
+
+        res.json(results);
+    })
+
+
+
+
+
 };
 
 //Show:
@@ -36,17 +46,16 @@ const destroy = (req, res) => {
     if (isNaN(id)) {
         return res.status(400).json({ error: "User Error", message: "ID non trovato" });
     }
-    const results = products.find(product => product.id == id);
 
-    if (!results) {
-        return res.status(400).json({ error: "Not Found", message: "Product non trovato" });
-    }
+    const sqlQuery = "DELETE FROM db_blog.posts WHERE id= ?";
+    const parametriQuery = [id]
 
-    products.splice(products.indexOf(results), 1);
+    db.query(sqlQuery, parametriQuery, (err, rows) => {
+        if (err) return res.status(500).json({ error: "Error database server", message: "Delete query failed" });
 
-    console.log(`Prodotto ${id} eliminato`, products);
 
-    return res.sendStatus(204);
+        return res.sendStatus(204);
+    })
 };
 
 //Store (Crud)
