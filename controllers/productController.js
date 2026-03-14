@@ -93,42 +93,63 @@ const destroy = (req, res) => {
 const store = (req, res) => {
 
 
-    const newProduct = {
-        id: products[products.length - 1].id + 1,
-        title: req.body.title,
-        content: req.body.content,
-        image: req.body.image,
-        tags: req.body.tags,
-    };
 
-    products.push(newProduct);
+    const title = req.body.title;
+    const content = req.body.content;
+    const image = req.body.image;
 
-    return res.status(201).json(newProduct)
+
+    if (!title) {
+        return res.status(400).json({ error: "Cannot insert post", message: "Per il post è necessario un titolo" });
+    }
+
+    const sqlQuery = "INSERT INTO posts (title, content, image) VALUES (?, ?, ?)";
+    const parametriQuery = [title, content, image];
+
+    db.query(sqlQuery, parametriQuery, (error, result) => {
+
+        if (error) {
+            console.log(error);
+            return res.status(500).json({ error: "Cannot insert post", message: "Per il post è necessario un titolo" });
+        }
+
+        console.log(result);
+
+        return res.status(201).json({ id: result.insertId });
+
+    });
 }
 
 const update = (req, res) => {
 
-
     const id = Number(req.params.id);
 
     if (isNaN(id)) {
-        return res.status(400).json({ error: "User Error", message: "ID non trovato" });
+        return res.status(400).json({ error: "User error", message: "L'id non è valido" });
     }
 
-    const result = products.find(product => product.id == id);
+    const title = req.body.title;
+    const content = req.body.content;
+    const image = req.body.image;
 
-    if (!result) {
-        return res.status(404).json({ error: "Not Found", message: "Product non trovato" });
-    }
+    const sqlQuery = "UPDATE posts SET title = ?,content = ?, image = ? WHERE id = ?";
+    const parametriQuery = [title, content, image, id];
 
-    result.title = req.body.title;
-    result.content = req.body.content;
-    result.image = req.body.image;
-    result.tags = req.body.tags;
+    db.query(sqlQuery, parametriQuery, (error, result) => {
 
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Cannot update", message: "Impossibile modificare il post" });
+        }
 
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Not found", message: "Impossibile modificare,post non esistente" });
+        }
 
-    return res.json(result);
+        return res.json({ message: "post updated" });
+
+    });
+
 }
 
 //Modify (crUd)
