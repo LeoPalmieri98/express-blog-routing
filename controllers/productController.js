@@ -31,12 +31,43 @@ const show = (req, res) => {
     if (isNaN(id)) {
         return res.status(400).json({ error: "User Error", message: "ID non trovato" });
     }
-    const results = products.find(product => product.id == req.params.id);
+    const entityQuery = "SELECT * FROM posts WHERE id = ?";
+    const relationsQuery = `
+            SELECT tags.label
+            FROM tags
+            JOIN post_tag ON tags.id = post_tag.tag_id
+            WHERE post_tag.post_id = ?;
+	        `
 
-    if (!results) {
-        return res.status(400).json({ error: "Not Found", message: "Product non trovato" });
-    }
-    return res.json(results);
+    const parametriQuery = [id];
+
+    db.query(entityQuery, parametriQuery, (error, results) => {
+
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ error: "Query error", message: "Impossibile processare la richiesta" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ error: "Not found", message: "Impossibile trovare la risorsa richiesta" });
+        }
+
+        const post = results[0];
+        console.log("post", post);
+
+        db.query(relationsQuery, parametriQuery, (error, results) => {
+
+            if (error) {
+                return res.status(500).json({ error: "Query error", message: "Impossibile processare la richiesta" });
+            }
+
+            post.tags = results.map(tag => tag.label);
+
+            res.json(post);
+
+        });
+
+    });
 };
 
 //Destroy:
@@ -50,7 +81,7 @@ const destroy = (req, res) => {
     const sqlQuery = "DELETE FROM db_blog.posts WHERE id= ?";
     const parametriQuery = [id]
 
-    db.query(sqlQuery, parametriQuery, (err, rows) => {
+    db.query(sqlQuery, parametriQuery, (err) => {
         if (err) return res.status(500).json({ error: "Error database server", message: "Delete query failed" });
 
 
